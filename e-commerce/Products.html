@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <style>
+        .vertical-line {
+            border-left: 1px solid #333;
+            /* Adjust color and thickness as needed */
+            height: 100px;
+            /* Adjust height as needed */
+            margin-left: 20px;
+            /* Adjust margin as needed */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid" style="min-height: 100vh; max-width: 100%;">
+        <div class="row">
+            <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="#">Logo</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="#">About</a>
+                            </li>
+                            <li class="nav-item">
+
+                                <a class='nav-link text-dark' href="Products.html">Products</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active " href="Cart.html" tabindex="-1"
+                                    aria-disabled="false">Cart</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active " href="#" tabindex="-1" aria-disabled="false">Contact</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <div class="row ms-4 mt-2">
+            <div class="col-3  border-end">
+                <form class="d-flex">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"
+                        id="searchinput">
+                    <button class="btn btn-outline-success" type="submit" id="btnSearch">Search</button>
+                </form>
+                <h3>Select Category</h3>
+                <div>
+                    <select name="Select category" id="category-body" class="mt-2">
+                    </select><br />
+                </div>
+
+                <h3>Select Brand</h3>
+                <div>
+                    <select name="Select Brand" id="brand" class="mt-2">
+                    </select>
+                </div>
+            </div>
+            <div class="col-9 row" id="allProducts">
+            </div>
+
+        </div>
+        <div class="row" style="height: 70px;">
+            <footer class="col bg-dark text-white text-center">
+                <p>&copy;2023 Your eCommerce. All rights reserved.</p>
+
+            </footer>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <script>
+        let cartlist = JSON.parse(localStorage.getItem('cartlist'));
+        let category = document.getElementById('category-body');
+        let brand = document.getElementById('brand');
+        let product = document.getElementById('allProducts');
+        let gArr = [];
+        allProducts();
+        categoryProduct();
+        brandProduct();
+        function getData() {
+            gArr = localStorage.getItem('ecom') ? JSON.parse(localStorage.getItem('ecom')) : [];
+        }
+        function allProducts() {
+            getData();
+            let template = '';
+            if (gArr.length == 0) {
+                template += 'loading....'
+            }
+            else {
+                gArr.map((item) => {
+                    template += `<div class="col-3">
+                    <div class="card" style="width: 18rem; height:370px">
+                        <img src="${item.thumbnail}" class="card-img-top" alt="thumbnail" height="150px">
+                        <div class="card-body">
+                            <p class="card-title">title:${item.title}</p>
+                            <p class="card-text">price:${item.price}</p>
+                            <p class="card-text">category:${item.category}</p>
+                            <p class="card-text">Stock:Avail</p>
+                            <a href="#" class="btn btn-primary" onclick="addBtnHandler(${item.id})">Add</a>
+                        </div>
+                    </div>
+                </div>`;
+                })
+            }
+            product.innerHTML = template;
+        }
+
+        function categoryProduct() {
+            let catData = gArr.map((item) => {
+                return item.category;
+            })
+            let uniqueCategory = [...new Set(catData)];
+            category.innerHTML = optionPro(uniqueCategory);
+        }
+
+        function brandProduct() {
+            let brandPro = gArr.map((item) => {
+                return item.brand;
+            })
+            let uniqueBrand = [...new Set(brandPro)];
+            brand.innerHTML = optionPro(uniqueBrand);
+        }
+        function optionPro(data) {
+            let str = '';
+            data.forEach(item => {
+                str += `<option value=${item}>${item}</option>`;
+            });
+            return str;
+        }
+        let input = document.getElementById('searchinput');
+        let btn = document.getElementById('btnSearch');
+        btn.addEventListener('click', searchInput);
+        function searchInput() {
+            product.innerHTML = '';
+            let searchItem = input.value.toLowerCase();
+            let filterProducts = gArr.filter(item => item.brand && item.brand.toLowerCase().includes(searchItem));
+            console.log(filterProducts);
+            displayfilterProducts(filterProducts);
+
+        }
+
+        function displayfilterProducts(data) {
+
+            let temp = '';
+            if (data.length == 0) {
+                temp += `No Product Found`;
+            }
+            else {
+                data.forEach((item) => {
+                    temp += `<div class="col-3">
+                    <div class="card" style="width: 18rem; height:370px">
+                        <img src="${item.thumbnail}" class="card-img-top" alt="thumbnail" height="150px">
+                        <div class="card-body">
+                            <p class="card-title">title:${item.title}</p>
+                            <p class="card-text">price:${item.price}</p>
+                            <p class="card-text">category:${item.category}</p>
+                            <p class="card-text">Stock:Avail</p>
+                            <a href="#" class="btn btn-primary">Add</a>
+                        </div>
+                    </div>
+                </div>`;
+                })
+            }
+            product.innerHTML = temp;
+        }
+
+
+
+        let globArr = [];
+
+
+
+        function addBtnHandler(itemID) {
+
+            let product = gArr.find((item) => {
+                return item.id == itemID;
+            })
+            console.log(product);
+            globArr.push(product);
+            cartlist = [...cartlist, ...globArr];
+            globArr = []
+            localStorage.setItem('cartlist', JSON.stringify(cartlist));
+        }
+
+
+
+
+
+
+    </script>
+</body>
+
+</html>

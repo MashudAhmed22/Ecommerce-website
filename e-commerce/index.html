@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-COMM</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <style>
+
+  </style>
+</head>
+
+<body>
+  <div class="container-fluid" style="min-height: 100vh; max-width: 100%;">
+    <div class="row">
+      <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">eCommerce</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" href="#">About</a>
+              </li>
+              <li class="nav-item">
+
+                <a class='nav-link text-dark' href="Products.html">Products</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active " href="Cart.html" tabindex="-1" aria-disabled="false">Cart</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active " href="#" tabindex="-1" aria-disabled="false">Contact</a>
+              </li>
+            </ul>
+            <form class="d-flex">
+              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+              <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+          </div>
+        </div>
+      </nav>
+    </div>
+    <div class="row ms-5 mt-2">
+      <div class="col-6">
+        <img src="markus-spiske-5UJbKYUjFCk-unsplash.jpg" alt="iamge" height="350rem" class="ms-5 mt-5">
+      </div>
+      <div class="col-6 mt-5">
+        <h1>Welcome To eCommerce</h1>
+        <hr>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum officiis consectetur dicta vero nostrum,
+          nihil, excepturi sed porro rerum maxime repudiandae quisquam magni neque similique omnis minima eos! Odio,
+          minima odit. Quaerat?</p>
+        <button type="button" class="btn btn-primary mt-5">Shop Now</button>
+      </div>
+
+    </div>
+    <h3>New Arrival</h3>
+    <div class="row mt-5" id="body">
+      <!-- new arrival -->
+      <br/>
+    </div>
+    <div class="row" style="height: 70px;">
+      <div class="col bg-dark text-white text-center">
+        <p>&copy;2023 Your eCommerce. All rights reserved.</p>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+  <script>
+    let gArr = [];
+    let body = document.getElementById('body');
+    // console.log(body);
+    fetchData();
+    async function fetchData() {
+      let res = await fetch('https://dummyjson.com/products');
+      let data = await res.json();
+      gArr = data.products;
+      newArrival()
+      // console.log(gArr);
+    }
+
+    function newArrival() {
+      let template = '';
+      if (gArr.length == 0) {
+        template += 'loading....'
+      }
+      else {
+        setData(gArr);
+        gArr = gArr.slice(0, 4);
+        gArr.map((item) => {
+          template += `<div class="col-3" >
+            <div class="card" style="width: 18rem; height:370px">
+              <img src="${item.thumbnail}" class="card-img-top" alt="thumbnail" height="150px">
+              <div class="card-body">
+                <h5 class="card-title">${item.title}</h5>
+                <p class="card-text">price:${item.price}</p>
+                <p class="card-text">category:${item.category}</p>
+                <p class="card-text">Stock:Avail</p>
+                <a href="#" class="btn btn-primary">Add</a>
+              </div>
+            </div>
+          </div>`;
+        })
+        body.innerHTML = template;
+
+      }
+
+    }
+
+    function setData(data){
+      localStorage.setItem('ecom',JSON.stringify(data));
+    }
+
+    let cartList=[];
+    localStorage.setItem('cartlist',JSON.stringify(cartList));
+
+  </script>
+</body>
+
+</html>

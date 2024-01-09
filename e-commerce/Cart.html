@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <style>
+        #minus,
+        #plus {
+            height: 30px;
+            width: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid" style="min-height: 100vh; max-width: 100%;">
+        <div class="row">
+            <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="#">eCommerce</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="#">About</a>
+                            </li>
+                            <li class="nav-item">
+
+                                <a class='nav-link text-dark' href="Products.html">Products</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active " href="Cart.html" tabindex="-1"
+                                    aria-disabled="false">Cart</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active " href="#" tabindex="-1" aria-disabled="false">Contact</a>
+                            </li>
+                        </ul>
+                        <form class="d-flex">
+                            <input class="form-control me-2" type="search" placeholder="Search Products"
+                                aria-label="Search">
+                            <button class="btn btn-outline-success" type="submit">Search</button>
+                        </form>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <div class="row d-flex">
+            <div class="col-6 border-end" id="productBody">
+                <!-- <div class="card" style="width: 18rem;">
+                    <div class="d-flex">
+                        <img src="markus-spiske-5UJbKYUjFCk-unsplash.jpg" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <p class="card-text">Brand</p>
+                            <p class="card-text">Price</p>
+                        </div>
+                    </div>
+                    <div class="d-flex  justify-content-center mt-3 mb-3">
+                        <button class="rounded-circle border-danger me-2" id="minus">-</button>
+                        <button type="button" class="btn btn-outline-secondary text-dark" id="add">0</button>
+                        <button class="rounded-circle  text-dark border-danger ms-2" id="plus">+</button>
+                    </div>
+                </div> -->
+
+            </div>
+            <div class="col-6">
+                <div class="card">
+                    <div class="card-header">
+                        PRICE DETAILS
+                    </div>
+                    <div class="card-body">
+                        <p>Price: <span id="price">0</span></p>
+                        <p class="card-text">Discount: <span id="discount">0</span></p>
+                        <p class="card-text"></p>
+                        <p class="card-text">Delivery Charges <span style="color: rgb(40, 161, 40);">Free</span></p>
+                        <p class="card-text"></p>
+                        <div class="border mb-2 w-25">
+                            Total Price: <span id="totalPrice">0</span>
+                        </div>
+                        <a href="#" class="btn btn-primary" id="orderNow">Order Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <script>
+        let cart = localStorage.getItem('cartlist') ? JSON.parse(localStorage.getItem('cartlist')) : [];
+        // console.log(cart);
+        displayCartItems();
+
+        // let price = document.getElementById('price');
+        // let discount = document.getElementById('discount');
+        // let totalPrice = document.getElementById('totalPrice');
+
+
+        function displayCartItems() {
+            let productBody = document.getElementById('productBody');
+            let template = '';
+            if (cart.length == 0) {
+                template += 'Cart is empty....'
+
+            }
+            else {
+                cart.forEach((item) => {
+                    template += `<div class="card" style="width: 18rem;">
+                        <div class="d-flex">
+                            <img src="${item.thumbnail}" class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <p class="card-text">Brand: ${item.brand}</p>
+                                <p class="card-text">Price: ${item.price}</p>
+                            </div>
+                        </div>
+                        <div class="d-flex  justify-content-center mt-3 mb-3">
+                            <button class="rounded-circle border-danger me-2" id="minus">-</button>
+                            <button type="button" class="btn btn-outline-secondary text-dark" id="add">0</button>
+                            <button class="rounded-circle  text-dark border-danger ms-2" id="plus">+</button>
+                            <button class="btn btn-outline-secondary text-dark ms-2" id="add" id="plus" onclick='removeHandler(${item.id})'>Remove</button>
+                        </div>
+                        
+                    </div> `;
+                })
+            }
+            productBody.innerHTML = template;
+        }
+        function removeHandler(id) {
+            cart = cart.filter((item) => {
+                return item.id != id;
+            })
+            saveData();
+            displayCartItems();
+        }
+        priceDetails();
+        function priceDetails() {
+            let price = document.getElementById('price');
+            let discount = document.getElementById('discount');
+            let totalPrice = document.getElementById('totalPrice');
+
+            let productPrice;
+         
+            cart.forEach((item)=>{
+                productPrice=item.price;
+            })
+            console.log(productPrice);
+
+            price.innerText=productPrice;
+            let discountItem=productPrice*0.5;
+            discount.innerText=discountItem;
+            totalPrice.innerText=productPrice-discountItem;
+
+            
+
+        }
+
+
+
+        function saveData() {
+            localStorage.setItem('cartlist', JSON.stringify(cart));
+        }
+
+    </script>
+
+</body>
+
+</html>
